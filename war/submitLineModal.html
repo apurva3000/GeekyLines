@@ -1,0 +1,31 @@
+ <div class="modal-header">
+            <h3 class="modal-title">Submit a new Line</h3>
+        </div>
+        <div class="modal-body">
+        <form name="lineForm" novalidate>
+			<div class="form-group" ng-class="{ 'has-error' : lineForm.content.$invalid && !lineForm.content.$pristine }">
+    		<label>Content</label>
+    		<input type="text" name="content" class="form-control" ng-model="line.content" required>
+    		<p ng-show="lineForm.content.$invalid && !lineForm.content.$pristine" class="help-block">Please fill in the content</p>
+			</div>
+			
+			<div class="form-group" ng-class="{ 'has-error' : lineForm.genre.$invalid && !lineForm.genre.$pristine }">
+    		<label>Genre</label>
+    		<input type="text" name="genre" class="form-control" ng-model="line.genre" ng-minlength="4" ng-maxlength="12" required>
+    		<p ng-show="lineForm.genre.$error.minlength" class="help-block">Genre is too short.</p>
+    		<p ng-show="lineForm.genre.$error.maxlength" class="help-block">Genre is too long.</p>
+    		<p ng-show="lineForm.genre.$invalid && !lineForm.genre.$pristine" class="help-block">Genre should be between 4 and 12 chars</p>
+			</div>
+			
+			<div class="form-group" ng-class="{ 'has-error' : lineForm.keywords.$invalid && !lineForm.keywords.$pristine }">
+    		<label>Keywords</label>
+    		<input type="text" name="keywords" class="form-control" ng-model="line.keywords" ng-pattern="regex" required>
+    		<p ng-show="lineForm.keywords.$invalid && !lineForm.keywords.$pristine" class="help-block">4 keywords separated by commas</p>
+			</div>
+			
+			</form>
+        </div>
+        <div class="modal-footer">
+            <button type="submit" class="btn btn-primary" ng-click="submitForm(lineForm.$valid, line)" ng-disabled="lineForm.$invalid">Submit</button>
+            <button class="btn btn-warning" type="button" ng-click="cancel()">Cancel</button>
+        </div>

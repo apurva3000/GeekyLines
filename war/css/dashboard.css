@@ -1,0 +1,43 @@
+@CHARSET "ISO-8859-1";
+
+body {
+	background: #330025;
+    padding-top: 70px; /* Required padding for .navbar-fixed-top. Remove if using .navbar-static-top. Change if height of navigation changes. */
+}
+
+h1{
+	color: #ffffff;
+}
+hr {
+width: 60%;
+}
+.label {
+    display: inline-block;
+    font-size: 100%;
+    font-weight: 300;
+}
+.pickuplineodd {
+	color: #4d4d4d;
+	font-family: 'Great Vibes', cursive;
+	font-weight: 500;
+	
+}
+
+.pickuplineeven {
+	color: #b3b3b3;
+	font-family: 'Great Vibes', cursive;
+	font-weight: 500; 
+}
+
+.pickupodd{
+	
+	background-color: rgba(230,230,230, 0.8)
+}
+
+.pickupeven{
+	background-color: rgba(77,77,77, 0.8)
+	}
+
+footer {
+    margin: 50px 0;
+}
