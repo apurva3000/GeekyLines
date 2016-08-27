@@ -9,6 +9,25 @@
     function DashBoardController($rootScope, $http, $cookieStore, $location, AuthenticationService, Restangular, $uibModal) {
         var dbd = this;
         
+        $rootScope.lines = [];
+        
+        var queryIndex = Restangular.one('query');
+        
+        dbd.searchIndex = function(searchQuery){
+        	console.log(searchQuery);
+        	var queryPromise = queryIndex.getList("", {searchQuery:searchQuery})
+        	
+        	queryPromise.then(
+ 	     		   function(response) {
+ 	         	 		console.log(response)
+ 	         	 		$rootScope.lines = response;
+ 	         		},
+ 	         		function(error) {
+ 	         		    console.log('error in searching');
+ 	         		    console.log(error);
+ 	         		});
+        }
+        
         dbd.submitLine = function(){
         	
         	 $rootScope.submitLineModal = $uibModal.open({

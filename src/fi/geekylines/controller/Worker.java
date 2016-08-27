@@ -21,6 +21,8 @@ import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.bind.annotation.ResponseStatus;
 
+import com.google.gson.Gson;
+
 @Controller
 @RequestMapping("/api/tasks")
 public class Worker {
@@ -34,10 +36,14 @@ public class Worker {
 	
 	@RequestMapping(value = "/indexLine", method = RequestMethod.POST)
 	@ResponseStatus(value = HttpStatus.OK)
-	public void checkForm(@RequestParam String linejson){
+	public void checkForm(@RequestParam String linejson) throws InterruptedException{
 		
 		log.info("Indexing task recieved");
-		System.out.println(linejson.toString());
+		log.info(linejson);
+		Gson gson = new Gson();
+		
+		Line line = gson.fromJson(linejson, Line.class);
+		searchService.indexADocument(line);
 		
 	}
 }

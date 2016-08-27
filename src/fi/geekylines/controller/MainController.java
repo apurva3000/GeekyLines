@@ -64,10 +64,10 @@ public class MainController {
 	
 	@RequestMapping(value = "/query", method = RequestMethod.GET)
 	@ResponseStatus(value = HttpStatus.OK)
-	public void queryIndex(){
+	public @ResponseBody 
+	List<Line> queryIndex(@RequestParam(value = "searchQuery", required = true) String searchQuery){
 		
-			searchService.query_index("geekyindex", "roses are red");
-		
+				return searchService.query_index(searchQuery);
 		
 	}
 	
@@ -78,11 +78,10 @@ public class MainController {
 		Gson gson = new Gson();
 		String linejson = gson.toJson(line);
 		
-		log.info(linejson);
 		log.info(token);
-		//Queue queue = QueueFactory.getDefaultQueue();
-	    //queue.add(TaskOptions.Builder.withUrl("/api/tasks/indexLine").header("authorization", "bearer " + access_token).param("linejson", linejson));
-
+		Queue queue = QueueFactory.getDefaultQueue();
+	    queue.add(TaskOptions.Builder.withUrl("/api/tasks/indexLine").header("Authorization", token).param("linejson", linejson));
+	    
 		
 		
 	}

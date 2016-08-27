@@ -1,6 +1,9 @@
 package fi.geekylines.service;
 
+import java.util.ArrayList;
 import java.util.Date;
+import java.util.List;
+import java.util.logging.Logger;
 
 import org.springframework.stereotype.Service;
 
@@ -17,29 +20,57 @@ import com.google.appengine.api.search.SearchServiceConfig;
 import com.google.appengine.api.search.SearchServiceFactory;
 import com.google.appengine.api.search.StatusCode;
 
+import fi.geekylines.controller.Worker;
 import fi.geekylines.domain.Line;
 
 
 @Service
 public class SearchingService {
 
-	public void query_index(String indexName, String query){
+	private String INDEX_NAME = "geekyindex";
+	private IndexSpec indexSpec;
+	private SearchService service;
+	private Index index;
+	
+	private static final Logger log = Logger.getLogger(SearchingService.class.getName());
+	
+	public SearchingService(){
 		
-		IndexSpec indexSpec = IndexSpec.newBuilder().setName(indexName).build();
-		SearchService service = SearchServiceFactory.getSearchService(
+		indexSpec = IndexSpec.newBuilder().setName(INDEX_NAME).build();
+		service = SearchServiceFactory.getSearchService(
 		       SearchServiceConfig.newBuilder().setDeadline(10.0).setNamespace("").build());
-		Index index = service.getIndex(indexSpec);
+		index = service.getIndex(indexSpec);
+	}
+	public List<Line> query_index(String query){
 
-	    Results<ScoredDocument> results = index.search(query);
+		List<Line> resp_results = new ArrayList<Line>();
+		Results<ScoredDocument> search_results = index.search(query);
 
-	    for (Document scored_doc : results){
+	    for (Document scored_doc : search_results){
+	    	Line line = new Line();
 	        System.out.println(scored_doc);
+	        for (Field field : scored_doc.getFields()){
+	        	    switch(field.getName()){
+	        	    	case "keywords":
+	        	    		line.setKeywords(field.getText());
+	        	    	case "content":
+	        	    		line.setContent(field.getText());
+	        	    	case "genre":
+	        	    		line.setGenre(field.getText());
+	        	    	case "author":
+	        	    		line.setUsername(field.getText());
+	        	    	case "date_added":
+	        	    		line.setDate_added(field.getDate());
+	        	    }
+	        }
+	        resp_results.add(line);
 	    }
+	    return resp_results;
 	}      
 	public Document createDocument(Line line){
 		
 		Document doc = Document.newBuilder()
-			    .addField(Field.newBuilder().setName("keywords").setText(line.getKeywords()))
+			    .addField(Field.newBuilder().setName("keywords").setText(line.getKeywordsStr()))
 			    .addField(Field.newBuilder().setName("content").setText(line.getContent()))
 			    .addField(Field.newBuilder().setName("genre").setText(line.getGenre()))
 			    .addField(Field.newBuilder().setName("date_added").setDate(new Date()))
@@ -49,19 +80,10 @@ public class SearchingService {
 		return doc;
 	}
 	
-	public void indexADocument(String indexName, Document document)
-		    throws InterruptedException {
+	public void indexADocument(Line line) throws InterruptedException {
+		  
 		
-		
-
-		  IndexSpec indexSpec = IndexSpec.newBuilder().setName(indexName).build();
-		  
-		  SearchService service = SearchServiceFactory.getSearchService(
-			       SearchServiceConfig.newBuilder().setDeadline(10.0).setNamespace("").build());
-		  Index index = service.getIndex(indexSpec);
-		  
-
-		  
+		  Document document = createDocument(line);
 		  final int maxRetry = 3;
 		  int attempts = 0;
 		  int delay = 2;
@@ -81,7 +103,8 @@ public class SearchingService {
 		    }
 		    break;
 		  }
-		  
+		 
+		  	log.info("Indexing Completed");
 		}
 	
 }

@@ -32,9 +32,9 @@
                  <ul class="nav navbar-nav navbar-right">
       				<form class="navbar-form">
         			<div class="input-group">
-           			 <input type="text" class="form-control" placeholder="Search" name="srch-term" id="srch-term">
+           			 <input type="text" class="form-control" placeholder="Search" name="srch-term" id="srch-term" ng-model="searchQuery">
            			 <div class="input-group-btn">
-                	<button class="btn btn-default" type="submit"><i class="glyphicon glyphicon-search"></i></button>
+                	<button class="btn btn-default" ng-click="dbd.searchIndex(searchQuery)"><i class="glyphicon glyphicon-search"></i></button>
             		</div>
        				 </div>
        				 <button class="btn btn-info" ng-click="dbd.logout()">Logout</button>
@@ -62,18 +62,22 @@
         </div>
         <!-- /.row -->
 
+
+<!-- "Roses are Red Violets are blue, <br> If you were a pokemon I would choose you" -->
         <!-- Project One -->
+        <div ng-repeat="line in lines">
         <div class="row">
-            <div class="col-sm-7 pickupodd">
-                <h2 class="pickuplineodd" align="center">"Roses are Red Violets are blue, <br> If you were a pokemon I would choose you"</h2>
+       
+            <div  ng-class="{'col-sm-7 pickupodd': $odd, 'col-sm-7 pickupeven': $even}">
+                <!--  <h2 ng-class="{pickupodd: $odd, pickupeven: $even}" align="center">{{ line.content }}</h2>-->
+                <h2 ng-class="{pickuplineodd: $odd, pickuplineeven: $even}" align="center">{{ line.content }}</h2>
             </div>
             <div class="col-sm-5">
-                <h3><span class="label label-success">Valentines</span><span class="glyphicon glyphicon-heart"></span></h3>
-                <span class="label label-danger">#Valentines</span>
-                 <span class="label label-danger">#Pokemon</span>
-                  <span class="label label-danger">#Reds</span>
-                   <span class="label label-danger">#Blues</span>
+                <h3><span class="label label-success">{{ line.genre }}</span></h3>
+                <span ng-repeat="keyword in line.keywords" class="label label-danger">#{{ keyword }}</span>
             </div>
+        </div>
+        <hr align="left">
         </div>
         <!-- /.row -->
 
